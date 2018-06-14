@@ -13,7 +13,7 @@ class InitialViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if UserManager().current().isSome() {
+        if UserManager().current() {
             let vc = storyboard?.instantiateViewController(withIdentifier: "MainNav")
             present(vc!, animated: true, completion: nil)
         } else {

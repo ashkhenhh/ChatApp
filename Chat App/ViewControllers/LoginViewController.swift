@@ -35,6 +35,15 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         }
         
         
+        UserManager().login(email: email, password: password) { status in
+            if status {
+                self.navigationController?.dismiss(animated: true, completion: nil)
+            } else {
+                print("error")
+            }
+        }
+        
+        
         
         
     }
