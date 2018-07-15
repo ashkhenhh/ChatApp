@@ -3,12 +3,18 @@
 //  Chat App
 //
 //  Created by Haik Aslanyan on 6/13/18.
-//  Copyright © 2018 Haik Aslanyan. All rights reserved.
+//  Copyright © 2018 Ashkhen. All rights reserved.
 //
 
 import UIKit
 
 class LoginViewController: UIViewController, UITextFieldDelegate {
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.hideKeyboardWhenTappedAround() 
+        
+    }
     
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
@@ -36,23 +42,26 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
         
         
         UserManager().login(email: email, password: password) { status in
-            if status {
-                self.navigationController?.dismiss(animated: true, completion: nil)
-            } else {
-                print("error")
+            
+            switch status {
+            case .success:  self.navigationController?.dismiss(animated: true, completion: nil)
+            case .noInternetConnection: print("No Internet Connection")
+            case .failed: print("Failed to login")
+                let vc = self.storyboard?.instantiateViewController(withIdentifier: "RegisterViewController")
+                self.show(vc!, sender: self)
             }
+
         }
         
         
         
         
+        
+        
     }
     
     
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
-        return true
-    }
+    
     
     
    

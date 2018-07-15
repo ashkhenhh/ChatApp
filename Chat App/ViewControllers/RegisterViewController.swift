@@ -2,34 +2,87 @@
 //  RegisterViewController.swift
 //  Chat App
 //
-//  Created by Haik Aslanyan on 6/13/18.
-//  Copyright © 2018 Haik Aslanyan. All rights reserved.
+//  Created by Ashkhen on 6/13/18.
+//  Copyright © 2018 Ashkhen. All rights reserved.
 //
 
 import UIKit
+import Photos
 
-class RegisterViewController: UIViewController {
+class RegisterViewController: UIViewController, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
 
+    @IBOutlet weak var profileImageView: UIImageView!
+    @IBOutlet weak var nameTextField: UITextField!
+    @IBOutlet weak var lastNameTextField: UITextField!
+    @IBOutlet weak var emailTextField: UITextField!
+    @IBOutlet weak var passwordTextField: UITextField!
+    @IBOutlet weak var confirmPasswordTextField: UITextField!
+    
+    let picker = ImagePickerService()
+    let user = User()
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        self.hideKeyboardWhenTappedAround() 
+       
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    @IBAction func selectPicture(_ sender: Any) {
+        picker.pick(from: self) {[weak self] image in
+            self?.profileImageView.image = image
+            self?.user.profilePic = image
+        }
     }
     
 
-    /*
-    // MARK: - Navigation
+    @IBAction func registerButtonTapped(_ sender: Any) {
+        
+        
+        user.name = nameTextField.text
+        user.lastName = lastNameTextField.text
+        user.email = emailTextField.text
+        user.password = passwordTextField.text
+        
+       
+        
+        guard let password = passwordTextField.text, password.isValidPassword() else {
+            let sheet = UIAlertController.init(title: "Warning", message: "Incorrect password", preferredStyle: .alert)
+            let cancelAction = UIAlertAction.init(title: "Okay", style: .cancel) { _ in
+                self.passwordTextField.text = nil
+            }
+            sheet.addAction(cancelAction)
+            present(sheet, animated: true, completion: nil)
+            return
+        }
+        
+        guard let email = emailTextField.text, email.isValidEmail() else {
+            let sheet = UIAlertController(title: "Warning", message: "Incorrect Email", preferredStyle: .alert)
+            let cancelAction = UIAlertAction(title: "Okay", style: .cancel) { _ in
+                self.emailTextField.text = nil
+            }
+            sheet.addAction(cancelAction)
+            present(sheet, animated: true, completion: nil)
+            return
+        }
+        
+        ThemeService.showLoading(true)
+        UserManager().register(user: user) { [weak self] status in
+            ThemeService.showLoading(false)
+            guard let weakSelf = self else { return }
+            
+            switch status {
+            case .success: weakSelf.navigationController?.dismiss(animated: true, completion: nil)
+            case .noInternetConnection: print("No Internet Connection")
+            case .failed: print("Failed to register")
+                
+            }
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        }
+        
     }
-    */
-
+    
+    
+    
+   
 }

@@ -2,8 +2,8 @@
 //  StringExtension.swift
 //  Chat App
 //
-//  Created by Haik Aslanyan on 6/14/18.
-//  Copyright © 2018 Haik Aslanyan. All rights reserved.
+//  Created by Ashkhen on 6/14/18.
+//  Copyright © 2018 Ashkhen. All rights reserved.
 //
 
 import Foundation
